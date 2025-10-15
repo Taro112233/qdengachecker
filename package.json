@@ -12,7 +12,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     
-    "db:generate": "pnpm schema:merge && prisma generate",
+    "db:generate": "pnpm prisma generate",
     "db:push": "pnpm schema:merge && prisma db push",
     "db:migrate": "pnpm schema:merge && prisma migrate dev",
     "db:migrate:prod": "pnpm schema:merge && prisma migrate deploy",
