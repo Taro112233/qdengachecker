@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Dengue Vaccine Assessment Form",
-  description: "แบบประเมินความเหมาะสมในการรับวัคซีนไข้เลือดออก",
+  title: "Dengue Assessment Form",
+  description: "แบบประเมินความเสี่ยงในการเป็นไข้เลือดออก",
 };
 
 export default function RootLayout({

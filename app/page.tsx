@@ -17,19 +17,9 @@ export default function Home() {
       <div className="max-w-4xl mx-auto">
         {!showSuggestion ? (
           <div>
-            <div className="w-full max-w-md mx-auto">
-              <Image
-                src={Logo}
-                alt="Logo"
-                width={180}
-                height={54}
-                className="mx-auto"
-              />
-            </div>
-
             <div className="text-center font-bold text-xl md:text-2xl mb-8">
-              แบบประเมินความเหมาะสมในการรับวัคซีนไข้เลือดออก<br />
-              Dengue Vaccine Assessment Form
+              แบบประเมินความเสี่ยงในการเป็นไข้เลือดออก<br />
+              Dengue Assessment Form
             </div>
 
             <div className="bg-white rounded-lg shadow-md p-6">

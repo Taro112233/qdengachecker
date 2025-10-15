@@ -346,9 +346,9 @@ export function AssessmentTable({ assessments, onRefresh }: AssessmentTableProps
               onClick={() => setDeleteDialogOpen(true)}
               disabled={selectedIds.size === 0}
               variant="destructive"
-              className="flex items-center gap-2 h-9 whitespace-nowrap"
+              className="flex items-center gap-2 h-9 whitespace-nowrap text-white"
             >
-              <Trash2 className="h-4 w-4" />
+              <Trash2 className="h-4 w-4 text-white" />
               ลบ ({selectedIds.size})
             </Button>
           </div>
@@ -483,9 +483,9 @@ export function AssessmentTable({ assessments, onRefresh }: AssessmentTableProps
                       <div className="space-y-1">
                         <Badge
                           className={
-                            assessment.recommendation.includes("แนะนำให้ฉีดวัคซีน")
-                              ? "bg-green-600 hover:bg-green-700 text-white"
-                              : "bg-red-600 hover:bg-red-700 text-white"
+                            assessment.recommendation.includes("ไม่แนะนำให้ฉีดวัคซีน")
+                              ? "bg-red-600 hover:bg-red-700 text-white"
+                              : "bg-green-600 hover:bg-green-700 text-white"
                           }
                         >
                           {assessment.recommendation}

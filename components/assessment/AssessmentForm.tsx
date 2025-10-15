@@ -41,10 +41,9 @@ export function AssessmentForm() {
   return (
     <div className="px-4 sm:px-6 md:px-8 max-w-3xl mx-auto">
       <div className="flex flex-col items-center justify-center mb-6 space-y-4">
-        <Image src={Logo} alt="Takeda logo" height={50} />
         <h1 className="text-xl sm:text-2xl font-bold text-center px-2">
-          แบบประเมินความเหมาะสมในการฉีดวัคซีนป้องกัน<br/>
-          <span className="text-primary">โรคไข้เลือดออก</span>
+          แบบประเมินความเสี่ยงในการเป็น<br/>
+          <span className="text-primary">ไข้เลือดออก</span>
         </h1>
       </div>
 
