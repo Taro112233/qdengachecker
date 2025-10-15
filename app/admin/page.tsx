@@ -5,7 +5,6 @@
 import { useState } from "react";
 import Image from "next/image";
 import Logo from "@/public/logo.png";
-import * as XLSX from "xlsx";
 import {
   Card,
   CardHeader,
@@ -15,16 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Download } from "lucide-react";
+import { AssessmentTable } from "@/components/admin/AssessmentTable";
 
 interface Assessment {
   id: string;
@@ -78,44 +68,11 @@ export default function AdminPage() {
         const data = await response.json();
         setAssessments(data);
       }
-    } catch (err) {
-      console.error("Error fetching assessments:", err);
+    } catch (error) {
+      console.error("Error fetching assessments:", error);
     } finally {
       setIsFetchingData(false);
     }
-  };
-
-  const handleExportToExcel = () => {
-    if (assessments.length === 0) {
-      alert("ไม่มีข้อมูลสำหรับ Export");
-      return;
-    }
-
-    const exportData = assessments.map((assessment, index) => ({
-      "ลำดับ": index + 1,
-      "วันที่": new Date(assessment.createdAt).toLocaleString('th-TH', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      }),
-      "อายุ": assessment.age,
-      "เพศ": assessment.gender,
-      "คนใกล้ชิดเคยเป็น": assessment.priorExposure ? "ใช่" : "ไม่ใช่",
-      "โรคประจำตัว": assessment.conditions.length > 0 
-        ? assessment.conditions.join(", ") 
-        : "-",
-      "คำแนะนำ": assessment.recommendation,
-      "เหตุผล": assessment.reason
-    }));
-
-    const ws = XLSX.utils.json_to_sheet(exportData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Assessments");
-
-    const fileName = `dengue_assessments_${new Date().toISOString().split('T')[0]}.xlsx`;
-    XLSX.writeFile(wb, fileName);
   };
 
   if (!isAuthenticated) {
@@ -172,102 +129,22 @@ export default function AdminPage() {
         </div>
 
         <div className="mb-4 flex justify-end">
-          <Button
-            onClick={handleExportToExcel}
-            disabled={assessments.length === 0}
-            className="flex items-center gap-2 bg-green-700"
-          >
-            <Download className="h-4 w-4" />
-            Export to Excel
-          </Button>
+          {/* Export all button removed - use table's export selected instead */}
         </div>
 
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          {isFetchingData ? (
-            <div className="flex items-center justify-center py-16">
-              <div className="text-center space-y-4">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-                <p className="text-gray-600">กำลังโหลดข้อมูล...</p>
-              </div>
+        {isFetchingData ? (
+          <div className="flex items-center justify-center py-16">
+            <div className="text-center space-y-4">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+              <p className="text-gray-600">กำลังโหลดข้อมูล...</p>
             </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="min-w-[120px]">วันที่</TableHead>
-                    <TableHead>อายุ</TableHead>
-                    <TableHead>เพศ</TableHead>
-                    <TableHead>คนใกล้ชิดเคยเป็น</TableHead>
-                    <TableHead className="min-w-[200px]">โรคประจำตัว</TableHead>
-                    <TableHead className="min-w-[200px]">คำแนะนำ</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {assessments.length === 0 ? (
-                    <TableRow>
-                      <TableCell colSpan={6} className="text-center py-8 text-gray-500">
-                        ยังไม่มีข้อมูลการประเมิน
-                      </TableCell>
-                    </TableRow>
-                  ) : (
-                    assessments.map((assessment) => (
-                      <TableRow key={assessment.id}>
-                        <TableCell className="text-sm">
-                          {new Date(assessment.createdAt).toLocaleString('th-TH', {
-                            year: 'numeric',
-                            month: 'short',
-                            day: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                          })}
-                        </TableCell>
-                        <TableCell>{assessment.age} ปี</TableCell>
-                        <TableCell>{assessment.gender}</TableCell>
-                        <TableCell>
-                          {assessment.priorExposure ? (
-                            <Badge variant="secondary">ใช่</Badge>
-                          ) : (
-                            <Badge variant="outline">ไม่ใช่</Badge>
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex flex-wrap gap-1">
-                            {assessment.conditions.length > 0 ? (
-                              assessment.conditions.map((condition, idx) => (
-                                <Badge key={idx} variant="secondary" className="text-xs">
-                                  {condition}
-                                </Badge>
-                              ))
-                            ) : (
-                              <span className="text-gray-400 text-sm">-</span>
-                            )}
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="space-y-1">
-                            <Badge
-                              variant={
-                                assessment.recommendation.includes("แนะนำ")
-                                  ? "default"
-                                  : "destructive"
-                              }
-                            >
-                              {assessment.recommendation}
-                            </Badge>
-                            <p className="text-xs text-gray-600 mt-1">
-                              {assessment.reason}
-                            </p>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  )}
-                </TableBody>
-              </Table>
-            </div>
-          )}
-        </div>
+          </div>
+        ) : (
+          <AssessmentTable 
+            assessments={assessments} 
+            onRefresh={fetchAssessments}
+          />
+        )}
 
         <div className="mt-8 flex justify-center">
           <Button
