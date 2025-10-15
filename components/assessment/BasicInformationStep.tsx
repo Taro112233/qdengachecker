@@ -12,10 +12,10 @@ import {
   CardFooter
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { FormData, FormDataValue } from "@/types/assessment";
+import { User, UserRound, Users, Check, X } from "lucide-react";
 
 type BasicInformationStepProps = {
   formData: FormData;
@@ -48,7 +48,7 @@ export function BasicInformationStep({
         </CardDescription>
       </CardHeader>
 
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-8">
         <div className="space-y-4">
           <Label htmlFor="age">1. อายุ</Label>
           <Input
@@ -62,25 +62,41 @@ export function BasicInformationStep({
             }}
             min={0}
             max={120}
+            className="text-center"
           />
         </div>
 
         <div className="space-y-4">
           <Label>2. เพศ</Label>
-          <RadioGroup
-            value={formData.gender || ''}
-            onValueChange={(value) => updateData('gender', value as "male" | "female" | "unspecified")}
-            className="flex flex-col space-y-2"
-          >
-            {['male', 'female', 'unspecified'].map((gender) => (
-              <div key={gender} className="flex items-center space-x-2">
-                <RadioGroupItem value={gender} id={`gender-${gender}`} />
-                <Label htmlFor={`gender-${gender}`} className="capitalize">
-                  {gender === 'male' ? 'ชาย' : gender === 'female' ? 'หญิง' : 'ไม่ระบุ'}
-                </Label>
-              </div>
-            ))}
-          </RadioGroup>
+          <div className="grid grid-cols-3 gap-3">
+            <Button
+              type="button"
+              variant={formData.gender === 'male' ? "default" : "outline"}
+              onClick={() => updateData('gender', 'male')}
+              className="w-full flex items-center justify-center gap-2"
+            >
+              <User className="h-4 w-4" />
+              ชาย
+            </Button>
+            <Button
+              type="button"
+              variant={formData.gender === 'female' ? "default" : "outline"}
+              onClick={() => updateData('gender', 'female')}
+              className="w-full flex items-center justify-center gap-2"
+            >
+              <UserRound className="h-4 w-4" />
+              หญิง
+            </Button>
+            <Button
+              type="button"
+              variant={formData.gender === 'unspecified' ? "default" : "outline"}
+              onClick={() => updateData('gender', 'unspecified')}
+              className="w-full flex items-center justify-center gap-2"
+            >
+              <Users className="h-4 w-4" />
+              ไม่ระบุ
+            </Button>
+          </div>
         </div>
 
         <div className="space-y-4">
@@ -90,16 +106,18 @@ export function BasicInformationStep({
               type="button"
               variant={formData.priorExposure === true ? "default" : "outline"}
               onClick={() => updateData('priorExposure', true)}
-              className="w-full"
+              className="w-full flex items-center justify-center gap-2"
             >
+              <Check className="h-4 w-4" />
               ใช่
             </Button>
             <Button
               type="button"
               variant={formData.priorExposure === false ? "default" : "outline"}
               onClick={() => updateData('priorExposure', false)}
-              className="w-full"
+              className="w-full flex items-center justify-center gap-2"
             >
+              <X className="h-4 w-4" />
               ไม่ใช่
             </Button>
           </div>
