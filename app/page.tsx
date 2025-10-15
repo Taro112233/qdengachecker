@@ -1,141 +1,101 @@
+// app/page.tsx
+
 "use client";
-import { useState } from "react";
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Alert, AlertTitle } from "@/components/ui/alert";
-import { Label } from "@/components/ui/label";
-import { useRouter } from "next/navigation";
 
-export default function AuthPage() {
-  const [mode, setMode] = useState<'login' | 'register'>("login");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+import { useState } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import Logo from '@/public/logo.png';
+import Vaccine from '@/public/vaccine.png';
+import { Button } from '@/components/ui/button';
 
-  // Form state
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const router = useRouter();
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setSuccess("");
-    setLoading(true);
-    try {
-      const endpoint = mode === "register" ? "/api/auth/register" : "/api/auth/login";
-      const body = mode === "register" ? form : { email: form.email, password: form.password };
-      const res = await fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.error || "เกิดข้อผิดพลาด");
-      } else {
-        setSuccess(mode === "register" ? "สมัครสมาชิกสำเร็จ!" : "เข้าสู่ระบบสำเร็จ!");
-        setTimeout(() => {
-          router.push("/dashboard");
-        }, 1000);
-      }
-    } catch (e) {
-      setError("เกิดข้อผิดพลาด");
-    } finally {
-      setLoading(false);
-    }
-  };
+export default function Home() {
+  const [showSuggestion, setShowSuggestion] = useState(false);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle className="text-center">
-            {mode === "login" ? "เข้าสู่ระบบ" : "สมัครสมาชิก"}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            {mode === "register" && (
-              <div>
-                <Label htmlFor="name">ชื่อ</Label>
-                <Input
-                  id="name"
-                  name="name"
-                  type="text"
-                  autoComplete="name"
-                  value={form.name}
-                  onChange={handleChange}
-                  required
-                  disabled={loading}
-                />
+    <div className="container mx-auto px-4 py-8">
+      <div className="max-w-4xl mx-auto">
+        {!showSuggestion ? (
+          <div>
+            <div className="w-full max-w-md mx-auto">
+              <Image
+                src={Logo}
+                alt="Logo"
+                width={180}
+                height={54}
+                className="mx-auto"
+              />
+            </div>
+
+            <div className="text-center font-bold text-xl md:text-2xl mb-8">
+              แบบประเมินความเหมาะสมในการรับวัคซีนไข้เลือดออก<br />
+              Dengue Vaccine Assessment Form
+            </div>
+
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <div className="flex flex-col md:flex-row">
+                <div className="md:w-1/3 flex justify-center mb-6 md:mb-0">
+                  <div className="text-center">
+                    <div className="mb-2">
+                      <Image
+                        src={Vaccine}
+                        alt="vaccine"
+                        width={180}
+                        height={180}
+                        className="mx-auto"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="md:w-2/3">
+                  <div className="text-lg md:text-xl font-bold mb-4 text-center md:text-left">
+                    คำแนะนำการให้วัคซีนป้องกันโรคไข้เลือดออก<br />
+                    บริษัท ทาเคดา (ประเทศไทย) จำกัด
+                  </div>
+
+                  <div className="text-sm mb-6">
+                    ที่อยู่: 57 อาคารปาร์คเวนเชอร์ อีโคเพล็กซ์ ชั้น 15<br />
+                    ถนนวิทยุ แขวงลุมพินี เขตปทุมวัน<br />
+                    กรุงเทพฯ 10330 ประเทศไทย<br />
+                    โทรศัพท์: 0-2697-9300
+                  </div>
+                </div>
               </div>
-            )}
-            <div>
-              <Label htmlFor="email">อีเมล</Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                value={form.email}
-                onChange={handleChange}
-                required
-                disabled={loading}
-              />
+
+              <div className="flex justify-center mt-4">
+                <Button
+                  type="button"
+                  className="bg-primary hover:bg-primary-700 active:bg-primary-800 text-white py-3 px-8 rounded-lg text-lg transition-colors"
+                  onClick={() => setShowSuggestion(true)}
+                >
+                  เข้าสู่แบบประเมิน
+                </Button>
+              </div>
             </div>
-            <div>
-              <Label htmlFor="password">รหัสผ่าน</Label>
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete={mode === "login" ? "current-password" : "new-password"}
-                value={form.password}
-                onChange={handleChange}
-                required
-                disabled={loading}
-              />
+          </div>
+        ) : (
+          <div>
+            <div className="text-center font-bold text-2xl mb-4">คำชี้แจง</div>
+            <div className="text-lg mb-6 leading-relaxed">
+              แบบประเมินนี้จัดทำขึ้นเพื่อช่วยประเมินความเหมาะสมในการรับวัคซีนไข้เลือดออกเด็งกี่ โดยคำแนะนำนี้เป็นเพียงข้อมูลเบื้องต้นเพื่อพิจารณาความเหมาะสมในการรับวัคซีน และข้อมูลในเอกสารฉบับนี้จัดทำขึ้นสำหรับประชาชนเป็นการทั่วไปโดยมีวัตถุประสงค์เพื่อเป็นการให้ข้อมูลเท่านั้น ข้อมูลนี้ไม่ควรถูกนำไปใช้เพื่อวินิจฉัยหรือรักษาปัญหาสุขภาพหรือโรคใด ๆ การให้ข้อมูลดังกล่าวนี้ไม่มีวัตถุประสงค์เป็นการทดแทน ควรปรึกษากับผู้ให้บริการทางการแพทย์ โปรดปรึกษาผู้ให้บริการทางการแพทย์ ของท่านสำหรับคำแนะนำเพิ่มเติม
             </div>
-            {error && (
-              <Alert variant="destructive">
-                <AlertTitle>{error}</AlertTitle>
-              </Alert>
-            )}
-            {success && (
-              <Alert>
-                <AlertTitle>{success}</AlertTitle>
-              </Alert>
-            )}
-            <Button type="submit" disabled={loading} className="mt-2 w-full">
-              {loading ? "กำลังดำเนินการ..." : mode === "login" ? "เข้าสู่ระบบ" : "สมัครสมาชิก"}
-            </Button>
-          </form>
-        </CardContent>
-        <CardFooter className="flex flex-col gap-2 items-center">
-          <Button
-            type="button"
-            variant="link"
-            className="text-xs"
-            onClick={() => {
-              setMode(mode === "login" ? "register" : "login");
-              setError("");
-              setSuccess("");
-            }}
-          >
-            {mode === "login" ? "ยังไม่มีบัญชี? สมัครสมาชิก" : "มีบัญชีแล้ว? เข้าสู่ระบบ"}
-          </Button>
-        </CardFooter>
-      </Card>
+            <div className="text-sm mb-8 italic">
+              อ้างอิง สมาคมโรคติดเชื้อแห่งประเทศไทย, คำแนะนำการให้วัคซีนป้องกันโรคสำหรับผู้ใหญ่และผู้สูงอายุ พ.ศ. 2568
+            </div>
+            <div className="flex justify-center">
+              <Link href="/assessment">
+                <Button
+                  type="button"
+                  className="bg-primary hover:bg-primary-700 active:bg-primary-800 text-white py-3 px-8 rounded-lg text-lg transition-colors"
+                >
+                  เริ่มทำแบบประเมิน
+                </Button>
+              </Link>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

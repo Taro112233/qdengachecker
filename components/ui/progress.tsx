@@ -1,31 +1,65 @@
+// components/ui/progress.tsx
 "use client"
 
 import * as React from "react"
-import * as ProgressPrimitive from "@radix-ui/react-progress"
-
+import { motion } from "motion/react"
 import { cn } from "@/lib/utils"
 
-function Progress({
-  className,
-  value,
-  ...props
-}: React.ComponentProps<typeof ProgressPrimitive.Root>) {
-  return (
-    <ProgressPrimitive.Root
-      data-slot="progress"
-      className={cn(
-        "bg-primary/20 relative h-2 w-full overflow-hidden rounded-full",
-        className
-      )}
-      {...props}
-    >
-      <ProgressPrimitive.Indicator
-        data-slot="progress-indicator"
-        className="bg-primary h-full w-full flex-1 transition-all"
-        style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
-      />
-    </ProgressPrimitive.Root>
-  )
+export interface ProgressProps extends React.HTMLAttributes<HTMLDivElement> {
+  value?: number
+  max?: number
+  showLabel?: boolean
+  variant?: "default" | "success" | "warning" | "error"
 }
+
+const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
+  ({ className, value = 0, max = 100, showLabel = false, variant = "default", ...props }, ref) => {
+    const percentage = Math.min(Math.max((value / max) * 100, 0), 100)
+
+    const getVariantColor = () => {
+      switch (variant) {
+        case "success":
+          return "bg-green-500"
+        case "warning":
+          return "bg-yellow-500"
+        case "error":
+          return "bg-red-500"
+        default:
+          return "bg-primary"
+      }
+    }
+
+    return (
+      <div className="w-full">
+        {showLabel && (
+          <div className="flex justify-between text-sm mb-1">
+            <span className="text-muted-foreground">Progress</span>
+            <span className="text-muted-foreground">{Math.round(percentage)}%</span>
+          </div>
+        )}
+        <div
+          ref={ref}
+          role="progressbar"
+          aria-valuenow={value}
+          aria-valuemin={0}
+          aria-valuemax={max}
+          className={cn(
+            "relative h-2 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-800",
+            className
+          )}
+          {...props}
+        >
+          <motion.div
+            className={cn("h-full rounded-full", getVariantColor())}
+            initial={{ width: 0 }}
+            animate={{ width: `${percentage}%` }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+          />
+        </div>
+      </div>
+    )
+  }
+)
+Progress.displayName = "Progress"
 
 export { Progress }
