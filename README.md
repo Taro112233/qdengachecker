@@ -1,5 +1,95 @@
-
-DATABASE_URL="e"
-
-BETTER_AUTH_SECRET=uyyyyssss
-BETTER_AUTH_URL=http://localhost:3000 #Base URL of your app
+Directory structure:
+└── taro112233-qdengachecker/
+    ├── README.md
+    ├── components.json
+    ├── eslint.config.mjs
+    ├── next.config.ts
+    ├── package.json
+    ├── pnpm-lock.yaml
+    ├── postcss.config.mjs
+    ├── tsconfig.json
+    ├── app/
+    │   ├── globals.css
+    │   ├── layout.tsx
+    │   ├── page.tsx
+    │   ├── api/
+    │   │   └── assess/
+    │   │       └── route.ts
+    │   ├── assessment/
+    │   │   ├── page.tsx
+    │   │   └── result/
+    │   │       └── page.tsx
+    │   ├── dashboard/
+    │   │   └── page.tsx
+    │   └── utils/
+    │       ├── auth-client.ts
+    │       └── auth.ts
+    ├── components/
+    │   ├── assessment/
+    │   │   ├── AssessmentForm.tsx
+    │   │   ├── BasicInformationStep.tsx
+    │   │   ├── MedicalConditionsStep.tsx
+    │   │   └── ResultDisplay.tsx
+    │   └── ui/
+    │       ├── accordion.tsx
+    │       ├── alert-dialog.tsx
+    │       ├── alert.tsx
+    │       ├── aspect-ratio.tsx
+    │       ├── avatar.tsx
+    │       ├── badge.tsx
+    │       ├── breadcrumb.tsx
+    │       ├── button.tsx
+    │       ├── card.tsx
+    │       ├── carousel.tsx
+    │       ├── chart.tsx
+    │       ├── checkbox.tsx
+    │       ├── collapsible.tsx
+    │       ├── command.tsx
+    │       ├── context-menu.tsx
+    │       ├── dialog.tsx
+    │       ├── drawer.tsx
+    │       ├── dropdown-menu.tsx
+    │       ├── ExcelExportButton.tsx
+    │       ├── form.tsx
+    │       ├── hover-card.tsx
+    │       ├── input-otp.tsx
+    │       ├── input.tsx
+    │       ├── label.tsx
+    │       ├── menubar.tsx
+    │       ├── navigation-menu.tsx
+    │       ├── pagination.tsx
+    │       ├── popover.tsx
+    │       ├── progress.tsx
+    │       ├── radio-group.tsx
+    │       ├── resizable.tsx
+    │       ├── scroll-area.tsx
+    │       ├── select.tsx
+    │       ├── separator.tsx
+    │       ├── sheet.tsx
+    │       ├── sidebar.tsx
+    │       ├── skeleton.tsx
+    │       ├── slider.tsx
+    │       ├── sonner.tsx
+    │       ├── switch.tsx
+    │       ├── table.tsx
+    │       ├── tabs.tsx
+    │       ├── textarea.tsx
+    │       ├── toast.tsx
+    │       ├── toaster.tsx
+    │       ├── toggle-group.tsx
+    │       ├── toggle.tsx
+    │       └── tooltip.tsx
+    ├── constants/
+    │   └── conditions.ts
+    ├── hooks/
+    │   └── use-mobile.ts
+    ├── lib/
+    │   ├── db.ts
+    │   └── utils.ts
+    ├── prisma/
+    │   └── schema.prisma
+    ├── public/
+    ├── types/
+    │   └── assessment.ts
+    └── utils/
+        └── eligibility.ts

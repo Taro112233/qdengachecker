@@ -143,7 +143,7 @@ export function MedicalConditionsStep({
               />
               <Label 
                 htmlFor={noneCondition.id} 
-                className="text-sm leading-none text-red-800"
+                className="text-sm leading-none text-green-700"
               >
                 {noneCondition.label}
               </Label>
