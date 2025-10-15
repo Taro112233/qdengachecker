@@ -35,8 +35,9 @@ Directory structure:
     │   │   └── AssessmentTable.tsx
     │   ├── assessment/
     │   │   ├── AssessmentForm.tsx
-    │   │   ├── BasicInformationStep.tsx
+    │   │   ├── BirthDateStep.tsx
     │   │   ├── MedicalConditionsStep.tsx
+    │   │   ├── ProvinceStep.tsx
     │   │   └── ResultDisplay.tsx
     │   └── ui/
     │       ├── accordion.tsx
@@ -88,7 +89,8 @@ Directory structure:
     │       ├── toggle.tsx
     │       └── tooltip.tsx
     ├── constants/
-    │   └── conditions.ts
+    │   ├── conditions.ts
+    │   └── provinces.ts
     ├── hooks/
     │   └── use-mobile.ts
     ├── lib/
@@ -101,3 +103,7 @@ Directory structure:
     │   └── assessment.ts
     └── utils/
         └── eligibility.ts
+
+
+DATABASE_URL="postgresql://neondb_owner:npg_DJPqe3Il4hRn@ep-red-smoke-adnhx5tn-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+ADMIN_ACCESS_CODE=123456
