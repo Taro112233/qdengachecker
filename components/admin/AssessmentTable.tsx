@@ -45,21 +45,36 @@ import {
 
 interface Assessment {
   id: string;
-  age: number;
-  gender: string;
-  priorExposure: boolean;
+  birthDate: string;
+  province: string;
   conditions: string[];
   recommendation: string;
   reason: string;
+  ageRecommendation?: string;
+  ageReason?: string;
+  provinceRecommendation?: string;
   createdAt: string;
 }
 
-type SortField = 'createdAt' | 'age' | 'gender' | 'recommendation';
+type SortField = 'createdAt' | 'birthDate' | 'province' | 'recommendation';
 type SortDirection = 'asc' | 'desc' | null;
 
 interface AssessmentTableProps {
   assessments: Assessment[];
   onRefresh: () => Promise<void>;
+}
+
+function calculateAge(birthDate: string): number {
+  const birth = new Date(birthDate);
+  const today = new Date();
+  let age = today.getFullYear() - birth.getFullYear();
+  const monthDiff = today.getMonth() - birth.getMonth();
+  
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+    age--;
+  }
+  
+  return age;
 }
 
 export function AssessmentTable({ assessments, onRefresh }: AssessmentTableProps) {
@@ -74,9 +89,8 @@ export function AssessmentTable({ assessments, onRefresh }: AssessmentTableProps
   const [dateTo, setDateTo] = useState<string>("");
   const [ageMin, setAgeMin] = useState<string>("");
   const [ageMax, setAgeMax] = useState<string>("");
-  const [genderFilter, setGenderFilter] = useState<string>("all");
+  const [provinceFilter, setProvinceFilter] = useState<string>("all");
 
-  // Toggle individual selection
   const toggleSelection = (id: string) => {
     const newSelected = new Set(selectedIds);
     if (newSelected.has(id)) {
@@ -87,7 +101,6 @@ export function AssessmentTable({ assessments, onRefresh }: AssessmentTableProps
     setSelectedIds(newSelected);
   };
 
-  // Toggle all selection (filtered results only)
   const toggleSelectAll = () => {
     if (selectedIds.size === filteredAndSortedAssessments.length && filteredAndSortedAssessments.length > 0) {
       setSelectedIds(new Set());
@@ -96,7 +109,6 @@ export function AssessmentTable({ assessments, onRefresh }: AssessmentTableProps
     }
   };
 
-  // Handle sorting
   const handleSort = (field: SortField) => {
     if (sortField === field) {
       if (sortDirection === 'asc') {
@@ -113,7 +125,6 @@ export function AssessmentTable({ assessments, onRefresh }: AssessmentTableProps
     }
   };
 
-  // Filter and sort assessments
   const filteredAndSortedAssessments = useMemo(() => {
     let filtered = [...assessments];
 
@@ -131,15 +142,15 @@ export function AssessmentTable({ assessments, onRefresh }: AssessmentTableProps
 
     // Age filter
     if (ageMin) {
-      filtered = filtered.filter(a => a.age >= parseInt(ageMin));
+      filtered = filtered.filter(a => calculateAge(a.birthDate) >= parseInt(ageMin));
     }
     if (ageMax) {
-      filtered = filtered.filter(a => a.age <= parseInt(ageMax));
+      filtered = filtered.filter(a => calculateAge(a.birthDate) <= parseInt(ageMax));
     }
 
-    // Gender filter
-    if (genderFilter !== "all") {
-      filtered = filtered.filter(a => a.gender === genderFilter);
+    // Province filter
+    if (provinceFilter !== "all") {
+      filtered = filtered.filter(a => a.province === provinceFilter);
     }
 
     // Sort
@@ -148,7 +159,7 @@ export function AssessmentTable({ assessments, onRefresh }: AssessmentTableProps
         let aVal: string | number = a[sortField];
         let bVal: string | number = b[sortField];
 
-        if (sortField === 'createdAt') {
+        if (sortField === 'createdAt' || sortField === 'birthDate') {
           aVal = new Date(aVal).getTime();
           bVal = new Date(bVal).getTime();
         }
@@ -160,20 +171,23 @@ export function AssessmentTable({ assessments, onRefresh }: AssessmentTableProps
     }
 
     return filtered;
-  }, [assessments, sortField, sortDirection, dateFrom, dateTo, ageMin, ageMax, genderFilter]);
+  }, [assessments, sortField, sortDirection, dateFrom, dateTo, ageMin, ageMax, provinceFilter]);
 
-  // Clear all filters
   const clearFilters = () => {
     setDateFrom("");
     setDateTo("");
     setAgeMin("");
     setAgeMax("");
-    setGenderFilter("all");
+    setProvinceFilter("all");
   };
 
-  const hasActiveFilters = dateFrom || dateTo || ageMin || ageMax || genderFilter !== "all";
+  const hasActiveFilters = dateFrom || dateTo || ageMin || ageMax || provinceFilter !== "all";
 
-  // Export selected to Excel
+  const uniqueProvinces = useMemo(() => {
+    const provinces = new Set(assessments.map(a => a.province));
+    return Array.from(provinces).sort((a, b) => a.localeCompare(b, 'th'));
+  }, [assessments]);
+
   const handleExportSelected = () => {
     const selectedAssessments = assessments.filter(a => selectedIds.has(a.id));
     
@@ -184,21 +198,28 @@ export function AssessmentTable({ assessments, onRefresh }: AssessmentTableProps
 
     const exportData = selectedAssessments.map((assessment, index) => ({
       "ลำดับ": index + 1,
-      "วันที่": new Date(assessment.createdAt).toLocaleString('th-TH', {
+      "วันที่บันทึก": new Date(assessment.createdAt).toLocaleString('th-TH', {
         year: 'numeric',
         month: 'short',
         day: 'numeric',
         hour: '2-digit',
         minute: '2-digit'
       }),
-      "อายุ": assessment.age,
-      "เพศ": assessment.gender,
-      "คนใกล้ชิดเคยเป็น": assessment.priorExposure ? "ใช่" : "ไม่ใช่",
+      "วันเดือนปีเกิด": new Date(assessment.birthDate).toLocaleDateString('th-TH', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      }),
+      "อายุ": calculateAge(assessment.birthDate),
+      "จังหวัด": assessment.province,
       "โรคประจำตัว": assessment.conditions.length > 0 
         ? assessment.conditions.join(", ") 
         : "-",
       "คำแนะนำ": assessment.recommendation,
-      "เหตุผล": assessment.reason
+      "เหตุผล": assessment.reason,
+      "คำแนะนำด้านอายุ": assessment.ageRecommendation || "-",
+      "เหตุผลด้านอายุ": assessment.ageReason || "-",
+      "ข้อมูลจังหวัด": assessment.provinceRecommendation || "-"
     }));
 
     const ws = XLSX.utils.json_to_sheet(exportData);
@@ -209,7 +230,6 @@ export function AssessmentTable({ assessments, onRefresh }: AssessmentTableProps
     XLSX.writeFile(wb, fileName);
   };
 
-  // Delete selected records
   const handleDeleteSelected = async () => {
     if (selectedIds.size === 0) return;
 
@@ -250,9 +270,7 @@ export function AssessmentTable({ assessments, onRefresh }: AssessmentTableProps
       {/* Filter and Action Buttons Section */}
       <div className="bg-white rounded-lg shadow p-4 mb-4">
         <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-end justify-between">
-          {/* Filters */}
           <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 w-full">
-            {/* Date From */}
             <div className="space-y-1">
               <Label htmlFor="dateFrom" className="text-xs">วันที่เริ่มต้น</Label>
               <Input
@@ -264,7 +282,6 @@ export function AssessmentTable({ assessments, onRefresh }: AssessmentTableProps
               />
             </div>
 
-            {/* Date To */}
             <div className="space-y-1">
               <Label htmlFor="dateTo" className="text-xs">วันที่สิ้นสุด</Label>
               <Input
@@ -276,7 +293,6 @@ export function AssessmentTable({ assessments, onRefresh }: AssessmentTableProps
               />
             </div>
 
-            {/* Age Min */}
             <div className="space-y-1">
               <Label htmlFor="ageMin" className="text-xs">อายุต่ำสุด</Label>
               <Input
@@ -290,7 +306,6 @@ export function AssessmentTable({ assessments, onRefresh }: AssessmentTableProps
               />
             </div>
 
-            {/* Age Max */}
             <div className="space-y-1">
               <Label htmlFor="ageMax" className="text-xs">อายุสูงสุด</Label>
               <Input
@@ -304,24 +319,22 @@ export function AssessmentTable({ assessments, onRefresh }: AssessmentTableProps
               />
             </div>
 
-            {/* Gender Filter */}
             <div className="space-y-1">
-              <Label htmlFor="gender" className="text-xs">เพศ</Label>
-              <Select value={genderFilter} onValueChange={setGenderFilter}>
-                <SelectTrigger id="gender" className="h-9">
+              <Label htmlFor="province" className="text-xs">จังหวัด</Label>
+              <Select value={provinceFilter} onValueChange={setProvinceFilter}>
+                <SelectTrigger id="province" className="h-9">
                   <SelectValue placeholder="ทั้งหมด" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">ทั้งหมด</SelectItem>
-                  <SelectItem value="ชาย">ชาย</SelectItem>
-                  <SelectItem value="หญิง">หญิง</SelectItem>
-                  <SelectItem value="ไม่ระบุ">ไม่ระบุ</SelectItem>
+                  {uniqueProvinces.map(province => (
+                    <SelectItem key={province} value={province}>{province}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
           </div>
 
-          {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-2 w-full lg:w-auto">
             {hasActiveFilters && (
               <Button
@@ -354,7 +367,6 @@ export function AssessmentTable({ assessments, onRefresh }: AssessmentTableProps
           </div>
         </div>
 
-        {/* Summary Row */}
         <div className="mt-3 flex items-center justify-between text-sm text-gray-600 border-t pt-3">
           <div>
             แสดง <span className="font-semibold text-gray-900">{filteredAndSortedAssessments.length}</span> จาก <span className="font-semibold text-gray-900">{assessments.length}</span> รายการ
@@ -384,29 +396,28 @@ export function AssessmentTable({ assessments, onRefresh }: AssessmentTableProps
                   onClick={() => handleSort('createdAt')}
                 >
                   <div className="flex items-center">
-                    วันที่
+                    วันที่บันทึก
                     {getSortIcon('createdAt')}
                   </div>
                 </TableHead>
                 <TableHead 
-                  className="cursor-pointer select-none"
-                  onClick={() => handleSort('age')}
+                  className="cursor-pointer select-none min-w-[120px]"
+                  onClick={() => handleSort('birthDate')}
                 >
                   <div className="flex items-center">
-                    อายุ
-                    {getSortIcon('age')}
+                    วันเกิด/อายุ
+                    {getSortIcon('birthDate')}
                   </div>
                 </TableHead>
                 <TableHead 
                   className="cursor-pointer select-none"
-                  onClick={() => handleSort('gender')}
+                  onClick={() => handleSort('province')}
                 >
                   <div className="flex items-center">
-                    เพศ
-                    {getSortIcon('gender')}
+                    จังหวัด
+                    {getSortIcon('province')}
                   </div>
                 </TableHead>
-                <TableHead>คนใกล้ชิดเคยเป็น</TableHead>
                 <TableHead className="min-w-[200px]">โรคประจำตัว</TableHead>
                 <TableHead 
                   className="min-w-[200px] cursor-pointer select-none"
@@ -422,7 +433,7 @@ export function AssessmentTable({ assessments, onRefresh }: AssessmentTableProps
             <TableBody>
               {filteredAndSortedAssessments.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-8 text-gray-500">
+                  <TableCell colSpan={6} className="text-center py-8 text-gray-500">
                     {hasActiveFilters ? "ไม่พบข้อมูลที่ตรงกับตัวกรอง" : "ยังไม่มีข้อมูลการประเมิน"}
                   </TableCell>
                 </TableRow>
@@ -440,12 +451,8 @@ export function AssessmentTable({ assessments, onRefresh }: AssessmentTableProps
                     <TableCell>
                       <Checkbox
                         checked={selectedIds.has(assessment.id)}
-                        onCheckedChange={() => {
-                          // Handled by row click
-                        }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                        }}
+                        onCheckedChange={() => {}}
+                        onClick={(e) => e.stopPropagation()}
                       />
                     </TableCell>
                     <TableCell className="text-sm">
@@ -457,15 +464,19 @@ export function AssessmentTable({ assessments, onRefresh }: AssessmentTableProps
                         minute: '2-digit'
                       })}
                     </TableCell>
-                    <TableCell>{assessment.age} ปี</TableCell>
-                    <TableCell>{assessment.gender}</TableCell>
-                    <TableCell>
-                      {assessment.priorExposure ? (
-                        <Badge variant="secondary">ใช่</Badge>
-                      ) : (
-                        <Badge variant="outline">ไม่ใช่</Badge>
-                      )}
+                    <TableCell className="text-sm">
+                      <div>
+                        {new Date(assessment.birthDate).toLocaleDateString('th-TH', {
+                          year: '2-digit',
+                          month: 'short',
+                          day: 'numeric'
+                        })}
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        ({calculateAge(assessment.birthDate)} ปี)
+                      </div>
                     </TableCell>
+                    <TableCell>{assessment.province}</TableCell>
                     <TableCell>
                       <div className="flex flex-wrap gap-1">
                         {assessment.conditions.length > 0 ? (

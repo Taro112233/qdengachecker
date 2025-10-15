@@ -18,12 +18,14 @@ import { AssessmentTable } from "@/components/admin/AssessmentTable";
 
 interface Assessment {
   id: string;
-  age: number;
-  gender: string;
-  priorExposure: boolean;
+  birthDate: string;
+  province: string;
   conditions: string[];
   recommendation: string;
   reason: string;
+  ageRecommendation?: string;
+  ageReason?: string;
+  provinceRecommendation?: string;
   createdAt: string;
 }
 
@@ -126,10 +128,6 @@ export default function AdminPage() {
           <p className="text-gray-600 mt-2">
             จำนวนทั้งหมด: {assessments.length} รายการ
           </p>
-        </div>
-
-        <div className="mb-4 flex justify-end">
-          {/* Export all button removed - use table's export selected instead */}
         </div>
 
         {isFetchingData ? (

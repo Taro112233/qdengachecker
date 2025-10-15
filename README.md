@@ -12,19 +12,27 @@ Directory structure:
     │   ├── globals.css
     │   ├── layout.tsx
     │   ├── page.tsx
+    │   ├── admin/
+    │   │   └── page.tsx
     │   ├── api/
+    │   │   ├── admin/
+    │   │   │   ├── assessments/
+    │   │   │   │   ├── route.ts
+    │   │   │   │   └── bulk-delete/
+    │   │   │   │       └── route.ts
+    │   │   │   └── verify/
+    │   │   │       └── route.ts
     │   │   └── assess/
     │   │       └── route.ts
     │   ├── assessment/
     │   │   ├── page.tsx
     │   │   └── result/
     │   │       └── page.tsx
-    │   ├── dashboard/
-    │   │   └── page.tsx
-    │   └── utils/
-    │       ├── auth-client.ts
-    │       └── auth.ts
+    │   └── dashboard/
+    │       └── page.tsx
     ├── components/
+    │   ├── admin/
+    │   │   └── AssessmentTable.tsx
     │   ├── assessment/
     │   │   ├── AssessmentForm.tsx
     │   │   ├── BasicInformationStep.tsx

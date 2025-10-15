@@ -9,19 +9,12 @@ export async function POST(request: Request) {
     const data = await request.json();
     
     // Validate required fields
-    if (data.age === null || data.gender === null || data.priorExposure === null) {
+    if (!data.birthDate || !data.province || data.conditions === undefined) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
       );
     }
-
-    // Convert gender to Thai
-    const genderMap: Record<string, string> = {
-      'male': 'ชาย',
-      'female': 'หญิง',
-      'unspecified': 'ไม่ระบุ'
-    };
 
     // Convert condition IDs to Thai labels
     const conditionsInThai = (data.conditions || []).map((id: string) => 
@@ -31,12 +24,14 @@ export async function POST(request: Request) {
     // Create assessment record in database
     const assessment = await prisma.assessment.create({
       data: {
-        age: data.age,
-        gender: genderMap[data.gender] || data.gender,
-        priorExposure: data.priorExposure,
+        birthDate: new Date(data.birthDate),
+        province: data.province,
         conditions: conditionsInThai,
         recommendation: data.recommendation || '',
-        reason: data.reason || ''
+        reason: data.reason || '',
+        ageRecommendation: data.ageRecommendation || null,
+        ageReason: data.ageReason || null,
+        provinceRecommendation: data.provinceRecommendation || null
       },
     });
 

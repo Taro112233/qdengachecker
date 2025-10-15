@@ -3,23 +3,21 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
-import Logo from "@/public/logo.png";
 import { Progress } from "@/components/ui/progress";
-import { BasicInformationStep } from "./BasicInformationStep";
+import { BirthDateStep } from "./BirthDateStep";
 import { MedicalConditionsStep } from "./MedicalConditionsStep";
+import { ProvinceStep } from "./ProvinceStep";
 import { FormData, FormDataValue } from "@/types/assessment";
 
 export function AssessmentForm() {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
-  const totalSteps = 2;
+  const totalSteps = 3;
 
   const [formData, setFormData] = useState<FormData>({
-    age: null,
-    gender: null,
-    priorExposure: null,
+    birthDate: null,
+    province: null,
     conditions: []
   });
 
@@ -31,7 +29,6 @@ export function AssessmentForm() {
   };
 
   const handleComplete = () => {
-    // Store form data in sessionStorage for result page
     sessionStorage.setItem('assessmentData', JSON.stringify(formData));
     router.push('/assessment/result');
   };
@@ -50,7 +47,7 @@ export function AssessmentForm() {
       <div className="max-w-md mx-auto mb-8 px-2">
         <div className="flex justify-between mb-1">
           <span className="text-sm font-medium">
-            Step {currentStep} of {totalSteps}
+            ขั้นตอนที่ {currentStep} จาก {totalSteps}
           </span>
           <span className="text-sm font-medium">
             {Math.round(progressPercentage)}%
@@ -61,7 +58,7 @@ export function AssessmentForm() {
 
       <div className="w-full">
         {currentStep === 1 && (
-          <BasicInformationStep
+          <BirthDateStep
             formData={formData}
             updateData={updateFormData}
             onNext={() => setCurrentStep(2)}
@@ -72,8 +69,17 @@ export function AssessmentForm() {
           <MedicalConditionsStep
             formData={formData}
             updateData={updateFormData}
-            onNext={handleComplete}
+            onNext={() => setCurrentStep(3)}
             onBack={() => setCurrentStep(1)}
+          />
+        )}
+
+        {currentStep === 3 && (
+          <ProvinceStep
+            formData={formData}
+            updateData={updateFormData}
+            onNext={handleComplete}
+            onBack={() => setCurrentStep(2)}
           />
         )}
       </div>

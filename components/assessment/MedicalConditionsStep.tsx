@@ -18,7 +18,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { FormData, FormDataValue } from "@/types/assessment";
 import { medicalConditions, staffCondition, noneCondition } from "@/constants/conditions";
-import { getRecommendation } from "@/utils/eligibility";
 
 type MedicalConditionsStepProps = {
   formData: FormData;
@@ -36,7 +35,6 @@ export function MedicalConditionsStep({
   const [selectedConditions, setSelectedConditions] = useState<string[]>(
     formData.conditions || []
   );
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const toggleCondition = (id: string) => {
     let updatedConditions = [...selectedConditions];
@@ -68,38 +66,8 @@ export function MedicalConditionsStep({
     updateData("conditions", updatedConditions);
   };
 
-  const handleCheck = async () => {
-    try {
-      setIsSubmitting(true);
-      
-      const recommendation = getRecommendation({
-        ...formData,
-        conditions: selectedConditions
-      });
-      
-      const response = await fetch('/api/assess', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...formData,
-          conditions: selectedConditions,
-          recommendation: recommendation.vaccine,
-          reason: recommendation.reason
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to save assessment');
-      }
-      
-      onNext();
-    } catch (error) {
-      console.error("Error saving assessment:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
+  const handleNext = () => {
+    onNext();
   };
 
   return (
@@ -174,15 +142,14 @@ export function MedicalConditionsStep({
         <Button
           variant="outline"
           onClick={onBack}
-          disabled={isSubmitting}
         >
           ย้อนกลับ
         </Button>
         <Button
-          onClick={handleCheck}
-          disabled={selectedConditions.length === 0 || isSubmitting}
+          onClick={handleNext}
+          disabled={selectedConditions.length === 0}
         >
-          {isSubmitting ? "กำลังประมวลผล..." : "ตรวจสอบ"}
+          ถัดไป
         </Button>
       </CardFooter>
     </Card>
