@@ -3,8 +3,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
-import Logo from "@/public/logo.png";
 import {
   Card,
   CardHeader,
@@ -82,7 +80,6 @@ export default function AdminPage() {
       <div className="min-h-screen w-screen flex items-center justify-center py-10 px-4">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
-            <Image src={Logo} alt="Logo" height={50} className="mx-auto mb-4" />
             <CardTitle className="text-2xl font-bold">
               Admin Dashboard
             </CardTitle>
