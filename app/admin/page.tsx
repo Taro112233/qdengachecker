@@ -121,7 +121,6 @@ export default function AdminPage() {
     <div className="min-h-screen w-screen p-4 sm:p-8">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col items-center mb-8">
-          <Image src={Logo} alt="Logo" height={50} className="mb-4" />
           <h1 className="text-2xl sm:text-3xl font-bold">
             ข้อมูลการประเมินทั้งหมด
           </h1>

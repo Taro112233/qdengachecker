@@ -12,7 +12,6 @@ import {
   CardFooter
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { FormData, FormDataValue } from "@/types/assessment";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -43,11 +42,6 @@ type BirthDateStepProps = {
 function toBuddhistYear(date: Date): string {
   const buddhistYear = date.getFullYear() + 543;
   return format(date, "d MMMM", { locale: th }) + " " + buddhistYear;
-}
-
-// Helper function to convert Buddhist year to Gregorian year
-function toGregorianYear(buddhistYear: number): number {
-  return buddhistYear - 543;
 }
 
 export function BirthDateStep({
@@ -87,24 +81,6 @@ export function BirthDateStep({
     onChange(event);
   };
 
-  // Generate year options with Buddhist years
-  const generateYearOptions = () => {
-    const currentYear = new Date().getFullYear();
-    const startYear = 1900;
-    const years = [];
-    
-    for (let year = currentYear; year >= startYear; year--) {
-      const buddhistYear = year + 543;
-      years.push({
-        value: year,
-        label: buddhistYear.toString(),
-        disabled: false
-      });
-    }
-    
-    return years;
-  };
-
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
@@ -116,7 +92,6 @@ export function BirthDateStep({
 
       <CardContent className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="birthDate">เลือกวันเกิด</Label>
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
               <Button

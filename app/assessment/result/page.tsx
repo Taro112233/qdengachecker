@@ -4,8 +4,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
-import Logo from "@/public/logo.png";
 import { ResultDisplay } from "@/components/assessment/ResultDisplay";
 import { FormData } from "@/types/assessment";
 

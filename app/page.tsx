@@ -5,7 +5,6 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import Logo from '@/public/logo.png';
 import Vaccine from '@/public/vaccine.png';
 import { Button } from '@/components/ui/button';
 
