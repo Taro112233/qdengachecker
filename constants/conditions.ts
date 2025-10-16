@@ -46,7 +46,7 @@ export const conditionLabels: Record<string, string> = {
   medicalStaff: "บุคลากรทางการแพทย์"
 };
 
-// Health condition recommendations from CSV
+// Health condition recommendations - Updated structure based on CSV
 export const healthRecommendations: Record<string, { result: string; recommendation: string; reason: string | null }> = {
   hadDengue: {
     result: "แนะนำให้ฉีดวัคซีน Qdenga ",
@@ -111,6 +111,16 @@ export const healthRecommendations: Record<string, { result: string; recommendat
   transplant: {
     result: "ไม่แนะนำให้ฉีดวัคซีน Qdenga ",
     recommendation: "ผู้ที่มีภาวะภูมิคุ้มกันบกพร่องรุนแรง ผู้ที่มีระดับ CD4+ ต่ำ หรือผู้ที่ได้รับการปลูกถ่ายอวัยวะ มีความเสี่ยงสูงต่อการติดเชื้อและอาจไม่ตอบสนองต่อวัคซีนอย่างเพียงพอ",
+    reason: null
+  },
+  none: {
+    result: "แนะนำให้ฉีดวัคซีน Qdenga ",
+    recommendation: "วัคซีนมีประสิทธิภาพในการลดความรุนแรงของการติดเชื้อครั้งแรกและการติดเชื้อซ้ำ",
+    reason: null
+  },
+  medicalStaff: {
+    result: "แนะนำให้ฉีดวัคซีน Qdenga ",
+    recommendation: "วัคซีนมีประสิทธิภาพในการลดความรุนแรงของการติดเชื้อครั้งแรกและการติดเชื้อซ้ำ",
     reason: null
   }
 };

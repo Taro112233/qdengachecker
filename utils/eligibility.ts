@@ -17,6 +17,7 @@ function calculateAge(birthDate: Date | string): number {
   return age;
 }
 
+// Updated to match CSV structure: age, result, recommendation, reason
 function getAgeCategory(age: number): { category: string; recommendation: string; reason: string; result: string } {
   if (age < 4) {
     return {
@@ -53,7 +54,7 @@ export function getDetailedRecommendation(formData: FormData): DetailedRecommend
   const age = formData.birthDate ? calculateAge(formData.birthDate) : 0;
   const ageInfo = getAgeCategory(age);
   
-  // Check health conditions
+  // Check health conditions - Updated to use new CSV structure
   const healthConditions = formData.conditions
     .filter(c => c !== "none" && c !== "medicalStaff")
     .map(conditionId => {
