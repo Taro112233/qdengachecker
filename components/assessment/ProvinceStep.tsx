@@ -30,6 +30,7 @@ import { cn } from "@/lib/utils";
 import { FormData, FormDataValue } from "@/types/assessment";
 import { provinces } from "@/constants/provinces";
 import { getDetailedRecommendation } from "@/utils/eligibility";
+import { toast } from "sonner";
 
 type ProvinceStepProps = {
   formData: FormData;
@@ -84,6 +85,12 @@ export function ProvinceStep({
       onNext();
     } catch (error) {
       console.error("Error saving assessment:", error);
+      
+      // Show error toast
+      toast.error("เกิดข้อผิดพลาด", {
+        description: "เกิดข้อผิดพลาด กรุณากดปุ่มตรวจสอบอีกครั้ง",
+        duration: 4000,
+      });
     } finally {
       setIsSubmitting(false);
     }

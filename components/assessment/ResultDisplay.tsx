@@ -74,6 +74,9 @@ export function ResultDisplay({ formData }: ResultDisplayProps) {
               }`}>
                 {detailedRec.overall.vaccine}
               </h4>
+              <p className="text-gray-700 text-base">
+                {detailedRec.overall.reason}
+              </p>
             </motion.div>
           </div>
         </div>
@@ -97,9 +100,11 @@ export function ResultDisplay({ formData }: ResultDisplayProps) {
           >
             <h4 className="font-bold text-base mb-3 text-blue-900">1. อายุ</h4>
             <div className="space-y-2 text-sm">
-              <p>
+              <p className="flex items-center gap-2">
                 <span className="font-semibold">อายุปัจจุบัน:</span>{" "}
-                <span className="text-blue-800">{age} ปี</span>
+                <Badge className="text-sm bg-black text-white hover:bg-gray-800">
+                  {age} ปี
+                </Badge>
               </p>
               <p className="text-gray-700">
                 {detailedRec.age.recommendation}
@@ -239,9 +244,10 @@ export function ResultDisplay({ formData }: ResultDisplayProps) {
             <div className="space-y-2 text-sm">
               {detailedRec.location.recommendation && (
                 <div className="pt-2 bg-white/50 p-3 rounded-md">
-                  <p>
-                    <span className="font-semibold">จังหวัด:</span>{" "}
-                    <span className="text-amber-800">{detailedRec.location.province}</span>
+                  <p className="flex items-center gap-2 mb-2">
+                    <Badge className="text-sm  bg-black text-white hover:bg-gray-800">
+                      {detailedRec.location.province}
+                    </Badge>
                   </p>
                   <p className="text-gray-700">{detailedRec.location.recommendation}</p>
                 </div>
