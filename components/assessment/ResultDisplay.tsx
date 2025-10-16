@@ -148,8 +148,8 @@ export function ResultDisplay({ formData }: ResultDisplayProps) {
                 <span className="text-amber-800">{detailedRec.location.region}</span>
               </p>
               {detailedRec.location.recommendation && (
-                <div className="pt-2">
-                  <p className="font-semibold mb-1">สถานการณ์ไข้เลือดออก:</p>
+                <div className="pt-2 bg-white/50 p-3 rounded-md">
+                  <p className="font-semibold mb-1 text-amber-900">สถานการณ์ไข้เลือดออกในจังหวัด:</p>
                   <p className="text-gray-700">{detailedRec.location.recommendation}</p>
                 </div>
               )}
