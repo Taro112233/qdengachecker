@@ -102,7 +102,6 @@ export function ProvinceStep({
 
       <CardContent className="space-y-4">
         <div className="space-y-2">
-          <Label>จังหวัด</Label>
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
               <Button

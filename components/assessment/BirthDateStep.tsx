@@ -65,7 +65,6 @@ export function BirthDateStep({
 
       <CardContent className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="birthDate">วันเดือนปีเกิด</Label>
           <Input
             id="birthDate"
             type="date"
